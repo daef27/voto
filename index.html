@@ -2,7 +2,9 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Urna Eletrônica - Votação</title>
+<title>Urna Eletrônica</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
@@ -26,10 +28,11 @@ padding:20px;
 }
 
 .urna{
-background:#ddd;
+background:#dcdcdc;
 padding:30px;
 border-radius:10px;
 margin-top:20px;
+display:inline-block;
 }
 
 .display{
@@ -39,6 +42,7 @@ font-size:40px;
 padding:10px;
 width:150px;
 margin:auto;
+margin-bottom:10px;
 }
 
 .teclado{
@@ -53,15 +57,22 @@ justify-content:center;
 padding:20px;
 font-size:20px;
 cursor:pointer;
+background:white;
+border-radius:5px;
+}
+
+.teclado button:hover{
+background:#eee;
 }
 
 .candidato{
-margin-top:20px;
-font-size:20px;
+margin-top:15px;
+font-size:22px;
+font-weight:bold;
 }
 
 .foto{
-width:120px;
+width:130px;
 margin-top:10px;
 border-radius:5px;
 }
@@ -93,6 +104,7 @@ color:white;
 display:flex;
 align-items:flex-end;
 justify-content:center;
+font-weight:bold;
 }
 
 </style>
@@ -148,13 +160,17 @@ justify-content:center;
 <h2>Resultado</h2>
 
 <div id="grafico">
+
 <div class="barra" id="b12">0</div>
 <div class="barra" id="b13">0</div>
 <div class="barra" id="b14">0</div>
 <div class="barra" id="b15">0</div>
+
 </div>
 
-<button onclick="gerarPDF()">Gerar PDF</button>
+<br>
+
+<button onclick="gerarPDF()">📄 Gerar PDF</button>
 
 </div>
 
@@ -163,15 +179,15 @@ justify-content:center;
 let numero=""
 
 let eleitores=[
-{cpf:"222",senha:"1234"}
+{cpf:"448",senha:"123"},
 
 ]
 
 let candidatos={
-12:{nome:"Kayo",foto:"https://i.pravatar.cc/120?img=1"},
-13:{nome:"Pedro",foto:"https://i.pravatar.cc/120?img=2"},
-14:{nome:"Alyson",foto:"https://i.pravatar.cc/120?img=3"},
-15:{nome:"Carlos",foto:"https://i.pravatar.cc/120?img=4"}
+12:{nome:"Kayo",foto:"https://i.pravatar.cc/150?img=1"},
+13:{nome:"Pedro",foto:"https://i.pravatar.cc/150?img=2"},
+14:{nome:"Alyson",foto:"https://i.pravatar.cc/150?img=3"},
+15:{nome:"Carlos",foto:"https://i.pravatar.cc/150?img=4"}
 }
 
 let votos=JSON.parse(localStorage.getItem("votos"))||{
@@ -224,10 +240,23 @@ function corrigir(){
 numero=""
 
 document.getElementById("numero").innerText=""
-
 document.getElementById("nomeCandidato").innerText=""
-
 document.getElementById("fotoCandidato").src=""
+
+}
+
+function beep(){
+
+let ctx=new AudioContext()
+let osc=ctx.createOscillator()
+
+osc.type="square"
+osc.frequency.value=800
+
+osc.connect(ctx.destination)
+osc.start()
+
+setTimeout(()=>osc.stop(),150)
 
 }
 
@@ -237,6 +266,8 @@ if(!candidatos[numero]){
 alert("Candidato inválido")
 return
 }
+
+beep()
 
 votos[numero]++
 
@@ -269,17 +300,28 @@ barra.innerText=votos[c]
 
 function gerarPDF(){
 
-let texto="Resultado da votação\n\n"
+const { jsPDF } = window.jspdf
+
+let pdf = new jsPDF()
+
+let y=20
+
+pdf.setFontSize(18)
+pdf.text("Resultado da Votação",20,y)
+
+y+=20
 
 for(let c in votos){
-texto+=c+" - "+candidatos[c].nome+" : "+votos[c]+" votos\n"
+
+let linha=c+" - "+candidatos[c].nome+" : "+votos[c]+" votos"
+
+pdf.text(linha,20,y)
+
+y+=10
+
 }
 
-let janela=window.open()
-
-janela.document.write("<pre>"+texto+"</pre>")
-
-janela.print()
+pdf.save("resultado_votacao.pdf")
 
 }
 
