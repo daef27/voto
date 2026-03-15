@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Eletrônica ++++</title>
+<title>Urna Eletrônica</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -23,13 +23,10 @@ background:linear-gradient(135deg,#e6edf7,#cfd9e6);
 text-align:center;
 }
 
-/* HEADER */
-
 header{
 background:linear-gradient(90deg,#003366,#0055aa);
 color:white;
 padding:20px;
-box-shadow:0 5px 10px rgba(0,0,0,0.2);
 }
 
 header img{
@@ -37,15 +34,11 @@ width:80px;
 margin-bottom:10px;
 }
 
-/* CONTAINER */
-
 .container{
 max-width:900px;
 margin:auto;
 padding:30px;
 }
-
-/* INPUT */
 
 input{
 padding:12px;
@@ -56,8 +49,6 @@ border:1px solid #ccc;
 font-size:16px;
 }
 
-/* BOTÕES */
-
 button{
 padding:12px 20px;
 border:none;
@@ -66,14 +57,11 @@ cursor:pointer;
 font-size:16px;
 background:#0055aa;
 color:white;
-transition:0.3s;
 }
 
 button:hover{
 background:#003f7a;
 }
-
-/* URNA */
 
 .urna{
 background:white;
@@ -83,8 +71,6 @@ margin-top:25px;
 display:inline-block;
 box-shadow:0 15px 40px rgba(0,0,0,0.25);
 }
-
-/* DISPLAY */
 
 .display{
 background:black;
@@ -97,8 +83,6 @@ margin-bottom:15px;
 border-radius:6px;
 font-family:monospace;
 }
-
-/* TECLADO */
 
 .teclado{
 margin-top:20px;
@@ -116,19 +100,11 @@ color:#333;
 border:1px solid #ddd;
 }
 
-.teclado button:hover{
-background:#e4e4e4;
-}
-
-/* BOTÃO BRANCO */
-
 .branco{
 grid-column:span 3;
 background:#777;
 color:white;
 }
-
-/* CANDIDATO */
 
 #nomeCandidato{
 font-size:22px;
@@ -141,54 +117,11 @@ color:#003366;
 width:130px;
 margin-top:10px;
 border-radius:10px;
-box-shadow:0 4px 12px rgba(0,0,0,0.3);
 }
-
-/* PDF */
 
 .pdf{
 margin-top:30px;
 background:#27ae60;
-}
-
-.pdf:hover{
-background:#1f8c4c;
-}
-
-/* RESPONSIVO */
-
-@media(max-width:768px){
-
-.display{
-font-size:32px;
-width:140px;
-}
-
-.teclado{
-grid-template-columns:repeat(3,70px);
-}
-
-}
-
-@media(max-width:480px){
-
-.container{
-padding:15px;
-}
-
-input{
-width:90%;
-}
-
-.teclado{
-grid-template-columns:repeat(3,60px);
-}
-
-.display{
-font-size:28px;
-width:120px;
-}
-
 }
 
 </style>
@@ -204,9 +137,9 @@ width:120px;
 
 <div class="container">
 
-<h2>Login do Eleitor</h2>
+<h2>Login</h2>
 
-<input type="text" id="cpf" placeholder="CPF">
+<input type="text" id="usuario" placeholder="Usuário">
 <input type="password" id="senha" placeholder="Senha">
 
 <br><br>
@@ -258,12 +191,8 @@ width:120px;
 
 let numero=""
 
-let eleitores=[
-{cpf:"400",senha:"123"},
-{cpf:"129",senha:"123"},
-{cpf:"411",senha:"123"},
-{cpf:"125",senha:"123"}
-]
+const usuarioSistema="assga"
+const senhaSistema="123"
 
 let candidatos={
 12:{nome:"Kayo",foto:"https://i.pravatar.cc/150?img=1"},
@@ -282,22 +211,15 @@ branco:0
 
 function login(){
 
-let cpf=document.getElementById("cpf").value
+let usuario=document.getElementById("usuario").value.toLowerCase()
 let senha=document.getElementById("senha").value
 
-let ok=eleitores.find(e=>e.cpf==cpf && e.senha==senha)
+if(usuario!==usuarioSistema || senha!==senhaSistema){
 
-if(!ok){
-alert("Eleitor inválido")
+alert("Login inválido")
 return
-}
 
-if(localStorage.getItem("votou_"+cpf)){
-alert("Você já votou")
-return
 }
-
-localStorage.setItem("eleitorAtual",cpf)
 
 document.getElementById("urnaArea").style.display="block"
 
@@ -333,8 +255,10 @@ document.getElementById("fotoCandidato").src=""
 function confirmar(){
 
 if(!candidatos[numero]){
+
 alert("Candidato inválido")
 return
+
 }
 
 votos[numero]++
@@ -354,10 +278,6 @@ salvarVoto()
 function salvarVoto(){
 
 localStorage.setItem("votos",JSON.stringify(votos))
-
-let cpf=localStorage.getItem("eleitorAtual")
-
-localStorage.setItem("votou_"+cpf,true)
 
 alert("Voto confirmado!")
 
@@ -398,11 +318,9 @@ total+=votos[c]
 pdf.text("Total de votos: "+total,20,y)
 
 y+=10
-
-pdf.text("Votos facultativos (branco): "+votos.branco,20,y)
+pdf.text("Votos em branco: "+votos.branco,20,y)
 
 y+=20
-
 pdf.text("Resultado da votação:",20,y)
 
 y+=10
