@@ -260,7 +260,9 @@ let numero=""
 
 let eleitores=[
 {cpf:"400",senha:"123"},
-{cpf:"129",senha:"123"}
+{cpf:"129",senha:"123"},
+{cpf:"411",senha:"123"},
+{cpf:"125",senha:"123"}
 ]
 
 let candidatos={
@@ -371,10 +373,21 @@ let pdf=new jsPDF()
 
 let y=20
 
+let agora=new Date()
+
 pdf.setFontSize(16)
 pdf.text("ASSGA - Associação de Surdos de São Gonçalo do Amarante",20,y)
 
-y+=15
+y+=10
+pdf.text("Relatório da Eleição",20,y)
+
+y+=10
+pdf.text("Data: "+agora.toLocaleDateString(),20,y)
+
+y+=10
+pdf.text("Hora: "+agora.toLocaleTimeString(),20,y)
+
+y+=20
 
 let total=0
 
@@ -388,9 +401,9 @@ y+=10
 
 pdf.text("Votos facultativos (branco): "+votos.branco,20,y)
 
-y+=15
+y+=20
 
-pdf.text("Resultado da votação",20,y)
+pdf.text("Resultado da votação:",20,y)
 
 y+=10
 
@@ -400,7 +413,8 @@ if(c!="branco"){
 
 let percentual=((votos[c]/total)*100).toFixed(1)
 
-let linha=c+" - "+candidatos[c].nome+" : "+votos[c]+" votos ("+percentual+"%)"
+let linha=c+" - "+candidatos[c].nome+
+" : "+votos[c]+" votos ("+percentual+"%)"
 
 pdf.text(linha,20,y)
 
@@ -410,7 +424,7 @@ y+=10
 
 }
 
-pdf.save("resultado_votacao.pdf")
+pdf.save("resultado_eleicao.pdf")
 
 }
 
