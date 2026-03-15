@@ -11,66 +11,174 @@
 
 <style>
 
-body{
-font-family:Arial;
-background:#eef2f7;
-text-align:center;
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
+body{
+font-family:Segoe UI, Arial;
+background:linear-gradient(135deg,#e6edf7,#cfd9e6);
+text-align:center;
+}
+
+/* HEADER */
+
 header{
-background:#003366;
+background:linear-gradient(90deg,#003366,#0055aa);
 color:white;
 padding:20px;
+box-shadow:0 5px 10px rgba(0,0,0,0.2);
 }
+
+header img{
+width:80px;
+margin-bottom:10px;
+}
+
+/* CONTAINER */
 
 .container{
 max-width:900px;
 margin:auto;
-padding:20px;
+padding:30px;
 }
 
-.urna{
-background:#dcdcdc;
-padding:20px;
-border-radius:10px;
-margin-top:20px;
-display:inline-block;
+/* INPUT */
+
+input{
+padding:12px;
+margin:8px;
+width:220px;
+border-radius:6px;
+border:1px solid #ccc;
+font-size:16px;
 }
+
+/* BOTÕES */
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+background:#0055aa;
+color:white;
+transition:0.3s;
+}
+
+button:hover{
+background:#003f7a;
+}
+
+/* URNA */
+
+.urna{
+background:white;
+padding:30px;
+border-radius:15px;
+margin-top:25px;
+display:inline-block;
+box-shadow:0 15px 40px rgba(0,0,0,0.25);
+}
+
+/* DISPLAY */
 
 .display{
 background:black;
 color:#00ff00;
-font-size:35px;
-padding:10px;
-width:150px;
+font-size:40px;
+padding:12px;
+width:160px;
 margin:auto;
-margin-bottom:10px;
+margin-bottom:15px;
+border-radius:6px;
+font-family:monospace;
 }
+
+/* TECLADO */
 
 .teclado{
 margin-top:20px;
 display:grid;
 grid-template-columns:repeat(3,80px);
-gap:10px;
+gap:12px;
 justify-content:center;
 }
 
 .teclado button{
-padding:20px;
+padding:18px;
 font-size:18px;
-cursor:pointer;
-background:white;
-border-radius:5px;
-border:none;
+background:#f4f4f4;
+color:#333;
+border:1px solid #ddd;
+}
+
+.teclado button:hover{
+background:#e4e4e4;
+}
+
+/* BOTÃO BRANCO */
+
+.branco{
+grid-column:span 3;
+background:#777;
+color:white;
+}
+
+/* CANDIDATO */
+
+#nomeCandidato{
+font-size:22px;
+font-weight:bold;
+margin-top:15px;
+color:#003366;
 }
 
 .foto{
-width:120px;
+width:130px;
 margin-top:10px;
+border-radius:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.3);
 }
 
-@media(max-width:600px){
+/* PDF */
+
+.pdf{
+margin-top:30px;
+background:#27ae60;
+}
+
+.pdf:hover{
+background:#1f8c4c;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:768px){
+
+.display{
+font-size:32px;
+width:140px;
+}
+
+.teclado{
+grid-template-columns:repeat(3,70px);
+}
+
+}
+
+@media(max-width:480px){
+
+.container{
+padding:15px;
+}
+
+input{
+width:90%;
+}
 
 .teclado{
 grid-template-columns:repeat(3,60px);
@@ -78,16 +186,19 @@ grid-template-columns:repeat(3,60px);
 
 .display{
 font-size:28px;
+width:120px;
 }
 
 }
 
 </style>
+
 </head>
 
 <body>
 
 <header>
+<img src="foto2.png">
 <h1>🗳️ Sistema de Votação</h1>
 </header>
 
@@ -126,7 +237,7 @@ font-size:28px;
 <button onclick="digitar(0)">0</button>
 <button onclick="confirmar()">✔</button>
 
-<button onclick="votarBranco()">Branco</button>
+<button class="branco" onclick="votarBranco()">Branco</button>
 
 </div>
 
@@ -139,7 +250,7 @@ font-size:28px;
 
 <br><br>
 
-<button onclick="gerarPDF()">📄 Gerar Resultado PDF</button>
+<button class="pdf" onclick="gerarPDF()">📄 Gerar Resultado PDF</button>
 
 </div>
 
@@ -148,8 +259,8 @@ font-size:28px;
 let numero=""
 
 let eleitores=[
-{cpf:"466",senha:"123"},
-{cpf:"125",senha:"123"}
+{cpf:"400",senha:"123"},
+{cpf:"129",senha:"123"}
 ]
 
 let candidatos={
@@ -246,7 +357,7 @@ let cpf=localStorage.getItem("eleitorAtual")
 
 localStorage.setItem("votou_"+cpf,true)
 
-alert("Voto confirmado")
+alert("Voto confirmado!")
 
 corrigir()
 
@@ -278,6 +389,10 @@ y+=10
 pdf.text("Votos facultativos (branco): "+votos.branco,20,y)
 
 y+=15
+
+pdf.text("Resultado da votação",20,y)
+
+y+=10
 
 for(let c in votos){
 
